@@ -6,6 +6,6 @@ fn main() {
     let input_vu8 = fs::read(&args[1]).unwrap();
     let input = str::from_utf8(&input_vu8).unwrap();
     println!("input: {}", input);
-    println!("result: {:?}", wasm_naga::convert(input));
+    println!("result: {:?}", wasm_naga::glsl2msl(input));
     println!("done");
 }
