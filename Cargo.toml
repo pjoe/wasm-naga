@@ -11,7 +11,7 @@ crate-type = ["cdylib", "rlib"]
 default = ["wee_alloc"]
 
 [dependencies]
-naga = { git = "https://github.com/gfx-rs/naga", features=["glsl"] }
+naga = { git = "https://github.com/pjoe/naga", branch="glsl-pomelo" }
 spirv = { package = "spirv_headers", version = "1" }
 wasm-bindgen = "0.2"
 

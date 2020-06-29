@@ -12,7 +12,14 @@ This would be some thing in the 100KB (gz) range.
 
 ### Current status
 
-Output size 11-jun-2020 for GLSL > MSL
+Output size 11-jun-2020 for GLSL > MSL (new glsl front WIP)
+
+```
+$ ll pkg/wasm_naga_bg.wasm
+-rw-r--r-- 1 code code 243428 Jun 29 17:11 pkg/wasm_naga_bg.wasm
+```
+
+Output size 11-jun-2020 for GLSL > MSL ('old' glsl front)
 
 ```
 $ ll pkg

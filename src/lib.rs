@@ -32,7 +32,9 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen]
 pub fn glsl2msl(input: &str) -> String {
-    let module = naga::front::glsl::parse_str(&input, String::from("main"), spirv::ExecutionModel::Vertex).unwrap();
+    let module =
+        naga::front::glsl_new::parse_str(&input, String::from("main"), naga::ShaderStage::Vertex)
+            .unwrap();
 
     println!("Compiled, header {:?}", module.header);
 
@@ -40,11 +42,21 @@ pub fn glsl2msl(input: &str) -> String {
     let mut binding_map = msl::BindingMap::default();
     binding_map.insert(
         msl::BindSource { set: 0, binding: 0 },
-        msl::BindTarget { buffer: None, texture: Some(1), sampler: None, mutable: false },
+        msl::BindTarget {
+            buffer: None,
+            texture: Some(1),
+            sampler: None,
+            mutable: false,
+        },
     );
     binding_map.insert(
         msl::BindSource { set: 0, binding: 1 },
-        msl::BindTarget { buffer: None, texture: None, sampler: Some(1), mutable: false },
+        msl::BindTarget {
+            buffer: None,
+            texture: None,
+            sampler: Some(1),
+            mutable: false,
+        },
     );
     let options = msl::Options {
         binding_map: &binding_map,
