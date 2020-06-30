@@ -32,6 +32,7 @@ static ALLOC: wee_alloc::WeeAlloc = wee_alloc::WeeAlloc::INIT;
 
 #[wasm_bindgen]
 pub fn glsl2msl(input: &str) -> String {
+    utils::set_panic_hook();
     let module =
         naga::front::glsl_new::parse_str(&input, String::from("main"), naga::ShaderStage::Vertex)
             .unwrap();
