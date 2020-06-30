@@ -11,8 +11,7 @@ crate-type = ["cdylib", "rlib"]
 default = ["wee_alloc"]
 
 [dependencies]
-naga = { git = "https://github.com/pjoe/naga", branch="glsl-pomelo" }
-spirv = { package = "spirv_headers", version = "1" }
+naga = { git = "https://github.com/pjoe/naga", branch="glsl-pomelo", features=["glsl-new"] }
 wasm-bindgen = "0.2"
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
