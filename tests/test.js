@@ -7,5 +7,6 @@ if (process.argv.length < 3) {
 }
 
 const input = fs.readFileSync(process.argv[2], "utf8");
-const output = naga.glsl2msl(input);
-console.log("result:", output);
+const moduleIdx = naga.glsl_front(input);
+console.log("glsl_front:", moduleIdx);
+console.log("msl_back:", naga.msl_back(moduleIdx));
