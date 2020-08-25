@@ -45,7 +45,7 @@ jobs:
       - name: Build
         run: |
           wasm-pack build --release --target nodejs
-          ll pkg
+          ls -l pkg
       - name: Test
         run: |
           node tests/test.js test-data/simple.vert
