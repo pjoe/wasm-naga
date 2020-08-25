@@ -8,7 +8,7 @@ edition = "2018"
 crate-type = ["cdylib", "rlib"]
 
 [features]
-default = ["wee_alloc", "glsl-in", "wgsl-in", "spv-out"]
+default = ["wee_alloc", "console_error_panic_hook", "glsl-in", "wgsl-in", "spv-out"]
 glsl-in = []
 wgsl-in = []
 msl-out = []

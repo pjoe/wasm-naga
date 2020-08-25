@@ -12,11 +12,11 @@ This would be some thing in the 100KB (gz) range.
 
 ### Current status
 
-Output size 22-jul-2020 for GLSL > MSL (new glsl front WIP)
+Output size 25-aug-2020 for glsl-in, wgsl-in, spv-out (new glsl front WIP)
 
 ```
 $ ll pkg/wasm_naga_bg.wasm
--rw-r--r-- 1 code code 260352 Jul 22 10:14 pkg/wasm_naga_bg.wasm
+-rw-r--r-- 1 code code 339784 Aug 25 13:13 pkg/wasm_naga_bg.wasm
 ```
 
 Output size 11-jun-2020 for GLSL > MSL ('old' glsl front)
