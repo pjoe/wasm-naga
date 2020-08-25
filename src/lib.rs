@@ -2,10 +2,10 @@ mod utils;
 
 use wasm_bindgen::prelude::*;
 
-use naga::Module;
 use lazy_static::lazy_static;
-use std::sync::Mutex;
+use naga::Module;
 use std::collections::HashMap;
+use std::sync::Mutex;
 
 // When the `wee_alloc` feature is enabled, use `wee_alloc` as the global
 // allocator.
@@ -31,23 +31,39 @@ impl ModuleStore {
 }
 
 lazy_static! {
-    static ref MODULES: Mutex<ModuleStore> = Mutex::new(ModuleStore{
+    static ref MODULES: Mutex<ModuleStore> = Mutex::new(ModuleStore {
         store: HashMap::new(),
         next_idx: 0,
     });
 }
 
+#[cfg(feature = "glsl-in")]
 #[wasm_bindgen]
-pub fn glsl_front(input: &str) -> usize {
+pub fn glsl_in(input: &str, stage: &str) -> usize {
     utils::set_panic_hook();
+    let shader_stage = match stage {
+        "vertex" => naga::ShaderStage::Vertex,
+        "fragment" => naga::ShaderStage::Fragment,
+        "compute" => naga::ShaderStage::Compute,
+        _ => return 0,
+    };
     let module =
-        naga::front::glsl_new::parse_str(&input, String::from("main"), naga::ShaderStage::Vertex)
-            .unwrap();
+        naga::front::glsl_new::parse_str(&input, String::from("main"), shader_stage).unwrap();
     MODULES.lock().unwrap().append(module)
 }
 
+#[cfg(feature = "wgsl-in")]
 #[wasm_bindgen]
-pub fn msl_back(module: usize) -> String {
+pub fn wgsl_in(input: &str) -> usize {
+    utils::set_panic_hook();
+    let module =
+        naga::front::wgsl::parse_str(&input).unwrap();
+    MODULES.lock().unwrap().append(module)
+}
+
+#[cfg(feature = "msl-out")]
+#[wasm_bindgen]
+pub fn msl_out(module: usize) -> String {
     utils::set_panic_hook();
     match MODULES.lock().unwrap().remove(module) {
         None => "Error: module not found".to_string(),
@@ -76,6 +92,29 @@ pub fn msl_back(module: usize) -> String {
                 binding_map: &binding_map,
             };
             msl::write_string(&module, options).unwrap()
+        }
+    }
+}
+
+#[cfg(feature = "spv-out")]
+#[wasm_bindgen]
+pub fn spv_out(module: usize) -> Box<[u8]> {
+    use naga::back::spv;
+
+    utils::set_panic_hook();
+    match MODULES.lock().unwrap().remove(module) {
+        None => Box::new([]),
+        Some(module) => {
+            let spv = spv::Writer::new(&module.header, spv::WriterFlags::NONE).write(&module);
+
+            let bytes = spv
+                .iter()
+                .fold(Vec::with_capacity(spv.len() * 4), |mut v, w| {
+                    v.extend_from_slice(&w.to_le_bytes());
+                    v
+                });
+
+            bytes.into_boxed_slice()
         }
     }
 }

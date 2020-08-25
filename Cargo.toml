@@ -8,10 +8,14 @@ edition = "2018"
 crate-type = ["cdylib", "rlib"]
 
 [features]
-default = ["wee_alloc"]
+default = ["wee_alloc", "glsl-in", "wgsl-in", "spv-out"]
+glsl-in = []
+wgsl-in = []
+msl-out = []
+spv-out = []
 
 [dependencies]
-naga = { git = "https://github.com/gfx-rs/naga", branch="master", features=["glsl-new", "spirv"] }
+naga = { git = "https://github.com/gfx-rs/naga", branch="master", features=["glsl-new", "glsl-validate", "spirv"] }
 wasm-bindgen = "0.2.65"
 
 # The `console_error_panic_hook` crate provides better debugging of panics by
@@ -37,6 +41,7 @@ lto = true
 opt-level = "s"
 
 [package.metadata.wasm-pack.profile.release]
+#wasm-opt = false
 wasm-opt = ["-Os"]
 
 [package.metadata.wasm-pack.profile.release.wasm-bindgen]
