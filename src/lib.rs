@@ -48,7 +48,7 @@ pub fn glsl_in(input: &str, stage: &str) -> usize {
         _ => return 0,
     };
     let module =
-        naga::front::glsl_new::parse_str(&input, String::from("main"), shader_stage).unwrap();
+        naga::front::glsl::parse_str(&input, "main", shader_stage, Default::default()).unwrap();
     MODULES.lock().unwrap().append(module)
 }
 
@@ -56,8 +56,7 @@ pub fn glsl_in(input: &str, stage: &str) -> usize {
 #[wasm_bindgen]
 pub fn wgsl_in(input: &str) -> usize {
     utils::set_panic_hook();
-    let module =
-        naga::front::wgsl::parse_str(&input).unwrap();
+    let module = naga::front::wgsl::parse_str(&input).unwrap();
     MODULES.lock().unwrap().append(module)
 }
 

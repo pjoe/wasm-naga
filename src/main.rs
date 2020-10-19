@@ -6,7 +6,6 @@ fn main() {
     let input_vu8 = fs::read(&args[1]).unwrap();
     let input = str::from_utf8(&input_vu8).unwrap();
     println!("input: {}", input);
-    println!("input: {}", input);
     let module = wasm_naga::glsl_in(input, "vertex");
     println!("module: {}", module);
     println!("result: {:?}", wasm_naga::spv_out(module));
