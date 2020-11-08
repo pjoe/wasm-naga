@@ -3,14 +3,14 @@ set -e
 
 rm -rf pkg
 
-# esm build
-wasm-pack build --release
-mkdir pkg/esm
-mv pkg/wasm_naga* pkg/esm/
+# web build
+wasm-pack build --release --target web
+mkdir pkg/web
+mv pkg/wasm_naga* pkg/web/
 
 # node build
 wasm-pack build --release --target nodejs
 
-# add esm build to package.json
-sed -i '/  "files":/a \ \ \ \ "esm",' pkg/package.json
-sed -i '/  "main":/a \ \ "module": "esm/wasm_naga.js",' pkg/package.json
+# add web build to package.json
+sed -i '/  "files":/a \ \ \ \ "web",' pkg/package.json
+sed -i '/  "main":/a \ \ "module": "web/wasm_naga.js",' pkg/package.json

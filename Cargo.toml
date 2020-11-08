@@ -1,7 +1,10 @@
 [package]
 name = "wasm-naga"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["Pelle Johnsen <pelle.johnsen@gmail.com>"]
+repository = "https://github.com/pjoe/wasm-naga"
+description = "wasm build of gfx-rs/naga"
+license = "MIT OR Apache-2.0"
 edition = "2018"
 
 [lib]
