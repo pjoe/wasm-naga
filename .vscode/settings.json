@@ -1,0 +1,7 @@
+{
+    "rust-analyzer.cargo.features": [
+        "glsl-in",
+        "wgsl-in",
+        "spv-out"
+    ]
+}

@@ -7,33 +7,40 @@ if (process.argv.length < 3) {
   process.exit(-1);
 }
 
-const fname = process.argv[2];
-const inPath = path.parse(fname);
-const input = fs.readFileSync(fname, "utf8");
+for (const arg of process.argv.slice(2)) {
+  const fname = process.argv[2];
+  const inPath = path.parse(fname);
+  const input = fs.readFileSync(fname, "utf8");
 
-let moduleIdx = 0;
-switch (inPath.ext) {
-  case ".vert":
-    moduleIdx = naga.glsl_in(input, "vertex");
-    break;
-  case ".frag":
-    moduleIdx = naga.glsl_in(input, "fragment");
-    break;
-  case ".comp":
-    moduleIdx = naga.glsl_in(input, "compute");
-    break;
-  case ".wgsl":
-    moduleIdx = naga.wgsl_in(input);
-    break;
+  try {
+    let moduleIdx = 0;
+    switch (inPath.ext) {
+      case ".vert":
+        moduleIdx = naga.glsl_in(input, "vertex");
+        break;
+      case ".frag":
+        moduleIdx = naga.glsl_in(input, "fragment");
+        break;
+      case ".comp":
+        moduleIdx = naga.glsl_in(input, "compute");
+        break;
+      case ".wgsl":
+        moduleIdx = naga.wgsl_in(input);
+        break;
+    }
+
+    console.log("parsed module:", moduleIdx);
+    const spv = naga.spv_out(moduleIdx);
+    console.log(`spv_out: ${spv.byteLength} byte`);
+    const outName = path.format({
+      ...inPath,
+      base: undefined,
+      ext: ".spv",
+    });
+    console.log("writing to:", outName);
+    fs.writeFileSync(outName, spv);
+  } catch (error) {
+    console.error("caught:", error);
+  }
 }
-
-console.log("parsed module:", moduleIdx);
-const spv = naga.spv_out(moduleIdx);
-console.log(`spv_out: ${spv.byteLength} byte`);
-const outName = path.format({
-  ...inPath,
-  base: undefined,
-  ext: ".spv",
-});
-console.log("writing to:", outName);
-fs.writeFileSync(outName, spv);
+console.log("Done");

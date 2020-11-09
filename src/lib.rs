@@ -39,17 +39,21 @@ lazy_static! {
 
 #[cfg(feature = "glsl-in")]
 #[wasm_bindgen]
-pub fn glsl_in(input: &str, stage: &str) -> usize {
+pub fn glsl_in(input: &str, stage: &str) -> Result<usize, JsValue> {
+    glsl_in_inner(input, stage).map_err(|e| e.into())
+}
+
+pub fn glsl_in_inner(input: &str, stage: &str) -> Result<usize, String> {
     utils::set_panic_hook();
     let shader_stage = match stage {
         "vertex" => naga::ShaderStage::Vertex,
         "fragment" => naga::ShaderStage::Fragment,
         "compute" => naga::ShaderStage::Compute,
-        _ => return 0,
+        _ => return Err("stage not supported".into()),
     };
-    let module =
-        naga::front::glsl::parse_str(&input, "main", shader_stage, Default::default()).unwrap();
-    MODULES.lock().unwrap().append(module)
+    let module = naga::front::glsl::parse_str(&input, "main", shader_stage, Default::default())
+        .map_err(|e| format!("{}", e))?;
+    Ok(MODULES.lock().unwrap().append(module))
 }
 
 #[cfg(feature = "wgsl-in")]
@@ -101,7 +105,8 @@ pub fn spv_out(module: usize) -> Box<[u8]> {
     use naga::back::spv;
 
     utils::set_panic_hook();
-    match MODULES.lock().unwrap().remove(module) {
+    let module_id = { MODULES.lock().unwrap().remove(module) };
+    match module_id {
         None => Box::new([]),
         Some(module) => {
             let spv = spv::Writer::new(&module.header, spv::WriterFlags::NONE).write(&module);
