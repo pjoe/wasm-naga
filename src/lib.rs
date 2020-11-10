@@ -58,10 +58,13 @@ pub fn glsl_in_inner(input: &str, stage: &str) -> Result<usize, String> {
 
 #[cfg(feature = "wgsl-in")]
 #[wasm_bindgen]
-pub fn wgsl_in(input: &str) -> usize {
+pub fn wgsl_in(input: &str) -> Result<usize, JsValue> {
+    wgsl_in_inner(input).map_err(|e| e.into())
+}
+pub fn wgsl_in_inner(input: &str) -> Result<usize, String> {
     utils::set_panic_hook();
-    let module = naga::front::wgsl::parse_str(&input).unwrap();
-    MODULES.lock().unwrap().append(module)
+    let module = naga::front::wgsl::parse_str(&input).map_err(|e| format!("{}", e))?;
+    Ok(MODULES.lock().unwrap().append(module))
 }
 
 #[cfg(feature = "msl-out")]
