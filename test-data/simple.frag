@@ -1,4 +1,5 @@
 #version 450 core
+layout(location=0) out vec4 o_color;
 void main() {
-    gl_FragDepth = 0;
+    o_color = vec4(1);
 }

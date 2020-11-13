@@ -12,27 +12,17 @@ This would be some thing in the 100KB (gz) range.
 
 ### Current status
 
-Output size 19-oct-2020 for glsl-in, wgsl-in, spv-out (new glsl front WIP)
+Output size 13-nov-2020 for glsl-in, wgsl-in, spv-out (new glsl front WIP)
 
 ```
 $ ll pkg/wasm_naga_bg.wasm
--rw-r--r-- 1 code code 404755 Oct 19 18:58 pkg/wasm_naga_bg.wasm
+-rw-r--r-- 1 code code 440631 Nov 13 06:21 pkg/wasm_naga_bg.wasm
 ```
 
 Output size 11-jun-2020 for GLSL > MSL ('old' glsl front)
 
 ```
-$ ll pkg
-total 536
-drwxr-xr-x 2 code code   4096 Jun 11 05:21 ./
-drwxr-xr-x 8 code code   4096 May 19 14:07 ../
--rw-r--r-- 1 code code      1 Jun 11 05:21 .gitignore
--rw-r--r-- 1 code code    480 Jun 11 05:21 README.md
--rw-r--r-- 1 code code    281 Jun 11 05:21 package.json
--rw-r--r-- 1 code code    144 Jun 11 05:21 wasm_naga.d.ts
--rw-r--r-- 1 code code   2143 Jun 11 05:21 wasm_naga.js
--rw-r--r-- 1 code code    340 Jun 11 05:21 wasm_naga_bg.d.ts
--rw-r--r-- 1 code code   1216 May 19 13:16 wasm_naga_bg.js
+$ ll pkg/wasm_naga_bg.wasm
 -rw-r--r-- 1 code code 510289 Jun 11 05:21 wasm_naga_bg.wasm
 ```
 
