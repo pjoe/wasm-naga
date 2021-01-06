@@ -104,15 +104,23 @@ pub fn msl_out(module: usize) -> String {
 
 #[cfg(feature = "spv-out")]
 #[wasm_bindgen]
-pub fn spv_out(module: usize) -> Box<[u8]> {
+pub fn spv_out(module: usize) -> Result<Box<[u8]>, JsValue> {
+    spv_out_inner(module).map_err(|e| e.into())
+}
+
+pub fn spv_out_inner(module: usize) -> Result<Box<[u8]>, String> {
     use naga::back::spv;
+    use naga::FastHashSet;
 
     utils::set_panic_hook();
     let module_id = { MODULES.lock().unwrap().remove(module) };
     match module_id {
-        None => Box::new([]),
+        None => Err("module not found".into()),
         Some(module) => {
-            let spv = spv::Writer::new(&module.header, spv::WriterFlags::NONE).write(&module);
+            let caps: FastHashSet<spv::Capability> =
+                vec![spv::Capability::Shader].into_iter().collect();
+            let spv = spv::write_vec(&module, spv::WriterFlags::NONE, caps)
+                .map_err(|e| format!("{}", e))?;
 
             let bytes = spv
                 .iter()
@@ -121,7 +129,7 @@ pub fn spv_out(module: usize) -> Box<[u8]> {
                     v
                 });
 
-            bytes.into_boxed_slice()
+            Ok(bytes.into_boxed_slice())
         }
     }
 }
