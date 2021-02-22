@@ -12,18 +12,13 @@ This would be some thing in the 100KB (gz) range.
 
 ### Current status
 
-Output size 26-jan-2021 for glsl-in, wgsl-in, spv-out
+Output size development (for glsl-in, wgsl-in, spv-out)
 
 ```
 $ ll pkg/wasm_naga_bg.wasm
+
+-rw-r--r-- 1 code code 559600 Feb 22 12:26 pkg/wasm_naga_bg.wasm
 -rw-r--r-- 1 code code 480386 Jan 26 07:44 pkg/wasm_naga_bg.wasm
-```
-
-Output size 11-jun-2020 for GLSL > MSL ('old' glsl front)
-
-```
-$ ll pkg/wasm_naga_bg.wasm
--rw-r--r-- 1 code code 510289 Jun 11 05:21 wasm_naga_bg.wasm
 ```
 
 ## 🔋 Batteries Included
