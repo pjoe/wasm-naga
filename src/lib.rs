@@ -51,8 +51,16 @@ pub fn glsl_in_inner(input: &str, stage: &str) -> Result<usize, String> {
         "compute" => naga::ShaderStage::Compute,
         _ => return Err("stage not supported".into()),
     };
-    let module = naga::front::glsl::parse_str(&input, "main", shader_stage, Default::default())
-        .map_err(|e| format!("{}", e))?;
+    let mut entry_points: naga::FastHashMap<String, naga::ShaderStage> = Default::default();
+    entry_points.insert("main".to_string(), shader_stage);
+    let module = naga::front::glsl::parse_str(
+        &input,
+        &naga::front::glsl::Options {
+            defines: Default::default(),
+            entry_points,
+        },
+    )
+    .map_err(|e| format!("{}", e))?;
     Ok(MODULES.lock().unwrap().append(module))
 }
 
@@ -117,10 +125,21 @@ pub fn spv_out_inner(module: usize) -> Result<Box<[u8]>, String> {
     match module_id {
         None => Err("module not found".into()),
         Some(module) => {
-            let caps: FastHashSet<spv::Capability> =
-                vec![spv::Capability::Shader].into_iter().collect();
-            let spv = spv::write_vec(&module, spv::WriterFlags::NONE, caps)
+            let analysis = naga::proc::Validator::new()
+                .validate(&module)
                 .map_err(|e| format!("{}", e))?;
+            let capabilities: FastHashSet<spv::Capability> =
+                vec![spv::Capability::Shader].into_iter().collect();
+            let spv = spv::write_vec(
+                &module,
+                &analysis,
+                &naga::back::spv::Options {
+                    lang_version: (1, 0),
+                    capabilities,
+                    flags: spv::WriterFlags::empty(),
+                },
+            )
+            .map_err(|e| format!("{}", e))?;
 
             let bytes = spv
                 .iter()
