@@ -1,8 +1,11 @@
-# vertex
-[[location(0)]] var<out> o_pos : vec4<f32>;
+// vertex
+struct VertexOutput {
+  [[builtin(position)]] pos : vec4<f32>;
+};
 
 [[stage(vertex)]]
-fn main() -> void {
-  o_pos = vec4<f32>(1);
-  return;
+fn main() -> VertexOutput {
+  var out: VertexOutput;
+  out.pos = vec4<f32>(1.0, 1.0, 1.0, 1.0);
+  return out;
 }

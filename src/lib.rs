@@ -42,7 +42,7 @@ lazy_static! {
 pub fn glsl_in(input: &str, stage: &str) -> Result<usize, JsValue> {
     glsl_in_inner(input, stage).map_err(|e| e.into())
 }
-
+#[cfg(feature = "glsl-in")]
 pub fn glsl_in_inner(input: &str, stage: &str) -> Result<usize, String> {
     utils::set_panic_hook();
     let shader_stage = match stage {
@@ -69,6 +69,7 @@ pub fn glsl_in_inner(input: &str, stage: &str) -> Result<usize, String> {
 pub fn wgsl_in(input: &str) -> Result<usize, JsValue> {
     wgsl_in_inner(input).map_err(|e| e.into())
 }
+#[cfg(feature = "wgsl-in")]
 pub fn wgsl_in_inner(input: &str) -> Result<usize, String> {
     utils::set_panic_hook();
     let module = naga::front::wgsl::parse_str(&input).map_err(|e| format!("{}", e))?;
@@ -77,35 +78,24 @@ pub fn wgsl_in_inner(input: &str) -> Result<usize, String> {
 
 #[cfg(feature = "msl-out")]
 #[wasm_bindgen]
-pub fn msl_out(module: usize) -> String {
+pub fn msl_out(module: usize) -> Result<String, JsValue> {
+    msl_out_inner(module).map_err(|e| e.into())
+}
+
+#[cfg(feature = "msl-out")]
+pub fn msl_out_inner(module: usize) -> Result<String, String> {
     utils::set_panic_hook();
     match MODULES.lock().unwrap().remove(module) {
-        None => "Error: module not found".to_string(),
+        None => Err("module not found".into()),
         Some(module) => {
             use naga::back::msl;
-            let mut binding_map = msl::BindingMap::default();
-            binding_map.insert(
-                msl::BindSource { set: 0, binding: 0 },
-                msl::BindTarget {
-                    buffer: None,
-                    texture: Some(1),
-                    sampler: None,
-                    mutable: false,
-                },
-            );
-            binding_map.insert(
-                msl::BindSource { set: 0, binding: 1 },
-                msl::BindTarget {
-                    buffer: None,
-                    texture: None,
-                    sampler: Some(1),
-                    mutable: false,
-                },
-            );
-            let options = msl::Options {
-                binding_map: &binding_map,
-            };
-            msl::write_string(&module, options).unwrap()
+            let options: msl::Options = Default::default();
+            let analysis = naga::valid::Validator::new(naga::valid::ValidationFlags::all())
+                .validate(&module)
+                .map_err(|e| format!("{}", e))?;
+            let (str, _) =
+                msl::write_string(&module, &analysis, &options).map_err(|e| format!("{:?}", e))?;
+            Ok(str)
         }
     }
 }
@@ -125,7 +115,7 @@ pub fn spv_out_inner(module: usize) -> Result<Box<[u8]>, String> {
     match module_id {
         None => Err("module not found".into()),
         Some(module) => {
-            let analysis = naga::proc::Validator::new()
+            let analysis = naga::valid::Validator::new(naga::valid::ValidationFlags::all())
                 .validate(&module)
                 .map_err(|e| format!("{}", e))?;
             let capabilities: FastHashSet<spv::Capability> =

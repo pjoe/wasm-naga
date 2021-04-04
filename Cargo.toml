@@ -1,6 +1,6 @@
 [package]
 name = "wasm-naga"
-version = "0.3.1"
+version = "0.3.2"
 authors = ["Pelle Johnsen pelle.johnsen@gmail.com>"]
 repository = "https://github.com/pjoe/wasm-naga"
 description = "wasm build of gfx-rs/naga"
@@ -11,14 +11,15 @@ edition = "2018"
 crate-type = ["cdylib", "rlib"]
 
 [features]
-default = ["wee_alloc", "console_error_panic_hook", "glsl-in", "wgsl-in", "spv-out"]
+default = ["wee_alloc", "console_error_panic_hook", "glsl-in", "wgsl-in", "spv-out", "msl-out"]
 glsl-in = []
 wgsl-in = []
 msl-out = []
 spv-out = []
 
 [dependencies]
-naga = { git = "https://github.com/gfx-rs/naga", branch="master", features=["glsl-in", "glsl-validate", "spv-out", "wgsl-in"] }
+naga = { git = "https://github.com/gfx-rs/naga", branch="master", features=["glsl-in", "glsl-validate", "spv-out", "wgsl-in", "msl-out"] }
+#naga = { git = "https://github.com/pjoe/naga", branch="glsl-in-glslpp-rs", features=["glsl-in", "glsl-validate", "spv-out", "wgsl-in", "msl-out"] }
 wasm-bindgen = "0.2.67"
 
 # The `console_error_panic_hook` crate provides better debugging of panics by

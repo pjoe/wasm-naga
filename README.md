@@ -8,7 +8,7 @@ wasm-pack build --release --target nodejs
 
 The target is reaching an output size acceptable for using run time in browser based apps.
 
-This would be some thing in the 100KB (gz) range.
+This would be something in the 100KB (gz) range.
 
 ### Current status
 
@@ -17,8 +17,9 @@ Output size development (for glsl-in, wgsl-in, spv-out)
 ```
 $ ll pkg/wasm_naga_bg.wasm
 
--rw-r--r-- 1 code code 559600 Feb 22 12:26 pkg/wasm_naga_bg.wasm
--rw-r--r-- 1 code code 480386 Jan 26 07:44 pkg/wasm_naga_bg.wasm
+-rw-r--r-- 1 code code 694014 Apr  4 09:12 pkg/wasm_naga_bg.wasm (glsl-in, wgsl-in, spv-out, msl-out)
+-rw-r--r-- 1 code code 559600 Feb 22 12:26 pkg/wasm_naga_bg.wasm (glsl-in, wgsl-in, spv-out)
+-rw-r--r-- 1 code code 480386 Jan 26 07:44 pkg/wasm_naga_bg.wasm (glsl-in, wgsl-in, spv-out)
 ```
 
 ## 🔋 Batteries Included

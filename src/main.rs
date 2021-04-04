@@ -18,7 +18,7 @@ fn main() {
             _ => panic!("Unknown extension for: {}", arg),
         };
         println!("module: {}", module);
-        println!("result: {:?}", wasm_naga::spv_out(module));
+        println!("result: {:?}", wasm_naga::msl_out_inner(module).unwrap());
     }
     println!("done");
 }
